@@ -1,13 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import products from '../data/products';
+import React from 'react';
+import { useSelector,useDispatch } from 'react-redux';
+import { productsSlice } from '../store/productsSlice';
 
-const ProductsScreen = () => {
+const ProductsScreen = ({navigation}) => {
+
+    const products=useSelector(state=>state.products.products)
+
+    const dispatch=useDispatch();
+
+
     return (
-        <FlatList data={products} numColumns={2} renderItem={({ item }) => (
-            <View style={styles.itemContainer}>
+         <FlatList style={styles.container} data={products} numColumns={2} renderItem={({ item }) => (
+            <Pressable style={styles.itemContainer} onPress={()=>{
+                dispatch(productsSlice.actions.setSelectedProduct(item.id));
+                navigation.navigate('Product Details')
+            }}>
                 <Image style={styles.image} source={{ uri: item.image }} />
-            </View>
+            </Pressable>
         )} />
     )
 }
@@ -16,10 +28,7 @@ export default ProductsScreen;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     image: {
         width: '100%',
